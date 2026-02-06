@@ -105,8 +105,6 @@ Item {
             if (Config.notch?.keepHidden ?? false) return true;
             return hasWindows || activeWindowFullscreen;
         }
-
-	console.log(`1234 ${screenHasBar} ${screen}`);
 	
         return !barPinned || !screenHasBar || activeWindowFullscreen;
     }
