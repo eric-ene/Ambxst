@@ -36,8 +36,22 @@ Item {
         const toplevel = ToplevelManager.activeToplevel;
         if (!toplevel || !toplevel.activated)
             return false;
+
         // Check if the toplevel is fullscreen
-        return toplevel.fullscreen === true;
+
+	// "for in" style loop doesn't seem to work here hence C-style loop
+	// I'm sure /in practice/ the case where active toplevel is on multiple monitors
+	// && fullscreen doesn't actually happen, but just in case, we check every screen.
+	let tlOnThisScreen = false;
+	for (let idx = 0; idx < toplevel.screens.length; idx++) {
+	    const tlScreenName = toplevel.screens[idx].name;
+
+	    if (tlScreenName === screen.name) {
+		tlOnThisScreen = true;
+	    }
+	}
+	
+        return toplevel.fullscreen === true && tlOnThisScreen == true;
     }
 
     // Whether auto-hide should be active (not pinned, or fullscreen forces it)

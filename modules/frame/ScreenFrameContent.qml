@@ -12,6 +12,7 @@ Item {
     id: root
 
     required property ShellScreen targetScreen
+    required property bool screenHasBar
     property bool hasFullscreenWindow: false
 
     // State source: Singletons and Registry
@@ -65,7 +66,7 @@ Item {
 
     // Bar expansion logic (synchronized with bar reveal)
     // Only expand if frame is enabled and bar is being contained
-    readonly property int barExpansion: (frameEnabled && configContainBar) ? Math.round((barSize + baseThickness) * _barAnimProgress) : 0
+    readonly property int barExpansion: (frameEnabled && configContainBar && screenHasBar) ? Math.round((barSize + baseThickness) * _barAnimProgress) : 0
 
     // --- Side-Specific Thickness Restoration ---
 

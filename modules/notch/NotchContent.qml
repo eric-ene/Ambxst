@@ -22,6 +22,7 @@ Item {
 
     required property ShellScreen screen
     property bool unifiedEffectActive: false
+    required property bool screenHasBar
 
     // Get this screen's visibility state
     readonly property var screenVisibilities: Visibilities.getForScreen(screen.name)
@@ -65,7 +66,7 @@ Item {
     
     // Check if bar is hovering (for synchronized reveal when bar is at same side)
     readonly property bool barHoverActive: {
-        if (barPosition !== notchPosition)
+        if ((barPosition !== notchPosition) && barOnScreen)
             return false;
         if (barPanelRef && typeof barPanelRef.hoverActive !== 'undefined') {
             return barPanelRef.hoverActive;
@@ -104,7 +105,10 @@ Item {
             if (Config.notch?.keepHidden ?? false) return true;
             return hasWindows || activeWindowFullscreen;
         }
-        return !barPinned || activeWindowFullscreen;
+
+	console.log(`1234 ${screenHasBar} ${screen}`);
+	
+        return !barPinned || !screenHasBar || activeWindowFullscreen;
     }
 
     // Check if the bar for this screen is vertical
@@ -284,7 +288,7 @@ Item {
             // Center notch
             Notch {
                 id: notchContainer
-                unifiedEffectActive: root.unifiedEffectActive
+                unifiedEffectActive: root.unifiedEffectActive && barOnScreen
                 parentHovered: root.isMouseOverNotch
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: root.notchPosition === "top" ? parent.top : undefined

@@ -92,6 +92,15 @@ PanelWindow {
     readonly property bool keepBarBorder: Config.bar.keepBarBorder ?? false
     readonly property bool containBar: Config.bar.containBar && (Config.bar.frameEnabled ?? false)
 
+    // Property for bar visibility
+    readonly property bool barOnScreen: {
+	const list = Config.bar?.screenList ?? [];
+	if (!list || list.length === 0)
+		    return true;
+	return list.includes(screen.name);
+    }
+
+
     Component.onCompleted: {
         Visibilities.registerBarPanel(screen.name, unifiedPanel);
         Visibilities.registerNotchPanel(screen.name, unifiedPanel);
@@ -154,7 +163,7 @@ PanelWindow {
 
         Rectangle {
             id: barCutout
-            visible: unifiedPanel.containBar && !unifiedPanel.keepBarShadow
+            visible: unifiedPanel.containBar && !unifiedPanel.keepBarShadow;
             color: "black" // Opaque for mask
 
             // Bind to barHitbox geometry
@@ -182,6 +191,7 @@ PanelWindow {
             id: frameContent
             anchors.fill: parent
             targetScreen: unifiedPanel.targetScreen
+	    screenHasBar: barOnScreen
             hasFullscreenWindow: unifiedPanel.hasFullscreenWindow
             z: 1
         }
@@ -191,6 +201,8 @@ PanelWindow {
             anchors.fill: parent
             screen: unifiedPanel.targetScreen
             z: 2
+
+	    visible: barOnScreen;
 
             // Keep the masking logic to cut out the notch area from the bar
             layer.enabled: true
@@ -226,6 +238,7 @@ PanelWindow {
         NotchContent {
             id: notchContent
             unifiedEffectActive: unifiedPanel.unifiedEffectActive
+	    screenHasBar: barOnScreen
             anchors.fill: parent
             screen: unifiedPanel.targetScreen
             z: 4
