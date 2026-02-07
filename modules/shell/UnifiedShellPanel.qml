@@ -125,7 +125,8 @@ PanelWindow {
     mask: Region {
         regions: [
             Region {
-                item: barContent.barHitbox
+		// Only include the bar hitbox if the bar is visible on this screen.
+                item: barOnScreen ? barContent.barHitbox : null
             },
             Region {
                 item: notchContent.notchHitbox
